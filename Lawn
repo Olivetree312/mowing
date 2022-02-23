@@ -25,15 +25,23 @@ private static String[][] lawn;
 		} 
  	}
 	 //make lawn up to 10% trees
- 	int trees = L*width/10;
-	 int randR=0;
- 	int randC=0;
+ 	int trees = (L*width)/10;
+	 double randR=0;
+ 	double randC=0;
+	 int R=0;
+ 	int C=0;
+	 double diffR=0;
+ 	double diffC=0;
  	for(int i=0; i<trees; i++)
 	 {
  	//random row & column #
- 		randR=(int)Math.random()*(L);
-		 randC=(int)Math.random()*(width);
- 		lawn[randR][randC]="T ";
+ 		randR=Math.random()*(L);
+		diffR=randR-(int)randR;
+		R=(int)(randR-diffR);
+		 randC=Math.random()*(width);
+ 		diffC=randC-(int)randC;
+ 		C=(int)(randC-diffC);
+ 		lawn[R][C]="T ";
 	 }
  	//place mower
 	 lawn[mowR][mowC]="m ";
@@ -57,8 +65,8 @@ private static String[][] lawn;
  int row = mowR;
  int col = mowC;
  //max up spaces
- int up=mowR-1;
- int left = mowC-1;
+ int up=row-1;
+ int left = col-1;
  //counts how many spaces up we've moved
  int ups=0;
  int downs=0;
@@ -69,60 +77,59 @@ private static String[][] lawn;
 		while(ups<=up)
 		{
 			mowR--;
-			if(!hitTree())
-			{
-				ups++;
-				leftRight();
-			}
 			if(hitTree())
 			{
 				mowR++;
 				break;
+			}
+			else
+			{
+				ups++;
+				leftRight();
 			}
 		}
 	//mowing down until !tree
 		while(downs<=L-3)
 		{
 			mowR++;
-			if(!hitTree())
-			{
-				downs++;
-				leftRight();
-			}
 			if(hitTree())
 			{
 				mowR--;
 				break;
+			}
+			else
+			{
+				downs++;
+				leftRight();
 			}
 		}		
 
 		while(lefts<=left)
 		{
 			mowC--;
-			if(!hitTree())
-			{
-				lefts++;
-				upDown();
-			}
 			if(hitTree())
 			{
 				mowC++;
 				break;
 			}
+			else
+			{
+				lefts++;
+				upDown();
+			}
 		}
-	//mowing down until !tree
 		while(rights<=width-3)
 		{
 			mowC++;
-			if(!hitTree())
-			{
-				rights++;
-				upDown();
-			}
 			if(hitTree())
 			{
 				mowC--;
 				break;
+			}
+			else
+			{
+				rights++;
+				upDown();
 			}
 		}		
 		
@@ -134,25 +141,23 @@ private static String[][] lawn;
  		while(true)
 		 {
  		mowC--;
-		 	if(!hitTree())
-		 		cut();
-		 	else
+		 	if(hitTree())
 	 		{	 	
 		 	mowC++;		
 	 		break;
 			 }
+ 			cut();
 		 }
  	//while mowing right & !tree
  		while(true)
 		 {
  		mowC++;
-		 	if(!hitTree())
-		 		cut();
-		 	else
+		 	if(hitTree())
 	 		{
 		 	mowC--;
 	 		break;
 			 }
+ 			cut();
 		 }
  }
  
@@ -162,31 +167,30 @@ private static String[][] lawn;
  		while(true)
 		 {
  		mowR--;
-		 	if(!hitTree())
-		 		cut();
-		 	else
+		 	if(hitTree())
 	 		{	 	
 		 	mowR++;		
 	 		break;
 			 }
+ 			cut();
 		 }
  	//while mowing down & !tree
  		while(true)
 		 {
  		mowR++;
-		 	if(!hitTree())
-		 		cut();
-		 	else
+		 	if(hitTree())
 	 		{
 		 	mowR--;
 	 		break;
 			 }
+ 			cut();
 		 }
  }
  
  //cuts lawn, turns blank into C
  public void cut()
  {
+ System.out.println("cut");
  lawn[mowR-1][mowC-1]="C ";
  lawn[mowR-1][mowC]="C ";
  lawn[mowR-1][mowC+1]="C ";
@@ -203,28 +207,45 @@ lawn[mowR+1][mowC+1]="C ";
  public boolean hitTree()
  {
  //detecting if hit tree or out of bounds
- if(lawn[mowR-1][mowC-1].equals("T ")||outsideR(mowR-1)||outsideC(mowC-1))
+ if(outsideR(mowR-1)||outsideC(mowC-1))
  	return true;
- if(lawn[mowR-1][mowC].equals("T ")||outsideR(mowR-1)||outsideC(mowC))
+else if(lawn[mowR-1][mowC-1].equals("T "))
+	return true;
+if(outsideR(mowR-1)||outsideC(mowC))
  	return true;
- if(lawn[mowR-1][mowC+1].equals("T ")||outsideR(mowR-1)||outsideC(mowC+1))
+else if(lawn[mowR-1][mowC].equals("T "))
+	return true;
+if(outsideR(mowR-1)||outsideC(mowC+1))
  	return true;
+else if(lawn[mowR-1][mowC+1].equals("T "))
+	return true;
 
-if(lawn[mowR][mowC-1].equals("T ")||outsideR(mowR)||outsideC(mowC-1))
+if(outsideR(mowR)||outsideC(mowC-1))
  	return true;
- if(lawn[mowR][mowC].equals("T ")||outsideR(mowR)||outsideC(mowC))
+else if(lawn[mowR][mowC-1].equals("T "))
+	return true;
+if(outsideR(mowR)||outsideC(mowC))
  	return true;
- if(lawn[mowR][mowC+1].equals("T ")||outsideR(mowR)||outsideC(mowC+1))
+else if(lawn[mowR][mowC].equals("T "))
+	return true;
+if(outsideR(mowR)||outsideC(mowC+1))
  	return true;
-	 
-if(lawn[mowR+1][mowC-1].equals("T ")||outsideR(mowR+1)||outsideC(mowC-1))
+else if(lawn[mowR][mowC+1].equals("T "))
+	return true;
+
+if(outsideR(mowR+1)||outsideC(mowC-1))
  	return true;
- if(lawn[mowR+1][mowC].equals("T ")||outsideR(mowR+1)||outsideC(mowC))
+else if(lawn[mowR+1][mowC-1].equals("T "))
+	return true;
+if(outsideR(mowR+1)||outsideC(mowC))
  	return true;
- if(lawn[mowR+1][mowC+1].equals("T ")||outsideR(mowR+1)||outsideC(mowC-1))
+else if(lawn[mowR+1][mowC].equals("T "))
+	return true;
+if(outsideR(mowR+1)||outsideC(mowC-1))
  	return true;
-else
-	return false;
+ else if(lawn[mowR+1][mowC+1].equals("T "))
+ 	return true;
+return false;
  }
  
  //checks if row # out of bounds
