@@ -1,0 +1,74 @@
+import java.util.*;
+
+public class main{
+
+public static int L;
+public static int W;
+public static int mowR;
+public static int mowC;
+public static int lawns;
+public static Lawn curr;
+public static void main(String[] args)
+{
+Scanner input = new Scanner(System.in);
+System.out.println("# of lawns: ");
+lawns = input.nextInt();
+input.nextLine();
+for(int i=0; i<lawns; i++)
+{
+//create lawn
+System.out.println("Enter: L_W_mower center row_mower center column");
+String s = input.nextLine();
+//gets inputs & creates new Lawn object
+getInputs(s);
+//setup lawn
+curr.setUp();
+//prints lawn
+curr.print();
+//mows lawn
+curr.mow();
+curr.print();
+}
+
+}
+//interprets user input, assigns variables
+public static void getInputs(String s)
+{
+	//keeps count to see which variable the int goes to
+	int count=0;
+	//temporarily holds the string that goes to toInt() method
+	String temp="";
+	//runs through s & puts detected ints through toInt()
+	for(int i=0; i<=s.length()-1; i++)
+	{
+		if(!(s.substring(i, i+1).equals(" ")))
+			temp+=s.substring(i,i+1);
+		else
+		{
+			count++;
+			if(count==1)
+				L=toInt(temp);
+			if(count==2)
+				W=toInt(temp);
+			if(count==3)
+				mowR=toInt(temp);
+			if(count==4)
+				mowC=toInt(temp);
+			temp="";
+		}
+	}
+	//creates new Lawn object;
+	curr = new Lawn(L, W, mowR, mowC);
+}
+
+public static int toInt(String s)
+{
+	for(int i=1; i<=40; i++)
+	{
+		String num = String.valueOf(i);
+		if(s.equals(num))
+			return i;
+	}
+	return 0;
+}
+}
