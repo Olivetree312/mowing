@@ -1,0 +1,248 @@
+public class Lawn {
+
+private static int L;
+private static int width;
+private static int mowR;
+private static int mowC;
+private static String[][] lawn;
+ public Lawn(int L, int width, int mowR, int mowC)
+ {
+ 	this.L=L;
+	 this.width = width;
+ 	this.mowR = mowR;
+	 this.mowC = mowC;
+ 	lawn = new String[L][width];
+ }
+ 
+ public void setUp()
+ {
+ 	//make blank spaces
+	 for(int i=0; i<lawn.length; i++)
+ 	{
+		for(int j=0; j<lawn[0].length; j++)
+		{
+			lawn[i][j]=".  ";
+		} 
+ 	}
+	 //make lawn up to 10% trees
+ 	int trees = L*width/10;
+	 int randR=0;
+ 	int randC=0;
+ 	for(int i=0; i<trees; i++)
+	 {
+ 	//random row & column #
+ 		randR=(int)Math.random()*(L);
+		 randC=(int)Math.random()*(width);
+ 		lawn[randR][randC]="T ";
+	 }
+ 	//place mower
+	 lawn[mowR][mowC]="m ";
+ }
+ 
+ public void print()
+ {
+ 	for(int i=0; i<L; i++)
+ 	{
+		for(int j=0; j<width; j++)
+		{
+			System.out.print(lawn[i][j]);
+		} 
+		System.out.println();
+ 	}
+ }
+ 
+ public void mow()
+ {
+ //og mow positions
+ int row = mowR;
+ int col = mowC;
+ //max up spaces
+ int up=mowR-1;
+ int left = mowC-1;
+ //counts how many spaces up we've moved
+ int ups=0;
+ int downs=0;
+ int lefts=0;
+ int rights=0;
+ 
+ 	//mowing up until !tree
+		while(ups<=up)
+		{
+			mowR--;
+			if(!hitTree())
+			{
+				ups++;
+				leftRight();
+			}
+			if(hitTree())
+			{
+				mowR++;
+				break;
+			}
+		}
+	//mowing down until !tree
+		while(downs<=L-3)
+		{
+			mowR++;
+			if(!hitTree())
+			{
+				downs++;
+				leftRight();
+			}
+			if(hitTree())
+			{
+				mowR--;
+				break;
+			}
+		}		
+
+		while(lefts<=left)
+		{
+			mowC--;
+			if(!hitTree())
+			{
+				lefts++;
+				upDown();
+			}
+			if(hitTree())
+			{
+				mowC++;
+				break;
+			}
+		}
+	//mowing down until !tree
+		while(rights<=width-3)
+		{
+			mowC++;
+			if(!hitTree())
+			{
+				rights++;
+				upDown();
+			}
+			if(hitTree())
+			{
+				mowC--;
+				break;
+			}
+		}		
+		
+ }
+ 
+ public void leftRight()
+ {
+ //while mowing left & !tree
+ 		while(true)
+		 {
+ 		mowC--;
+		 	if(!hitTree())
+		 		cut();
+		 	else
+	 		{	 	
+		 	mowC++;		
+	 		break;
+			 }
+		 }
+ 	//while mowing right & !tree
+ 		while(true)
+		 {
+ 		mowC++;
+		 	if(!hitTree())
+		 		cut();
+		 	else
+	 		{
+		 	mowC--;
+	 		break;
+			 }
+		 }
+ }
+ 
+ public void upDown()
+ {
+ //while mowing up & !tree
+ 		while(true)
+		 {
+ 		mowR--;
+		 	if(!hitTree())
+		 		cut();
+		 	else
+	 		{	 	
+		 	mowR++;		
+	 		break;
+			 }
+		 }
+ 	//while mowing down & !tree
+ 		while(true)
+		 {
+ 		mowR++;
+		 	if(!hitTree())
+		 		cut();
+		 	else
+	 		{
+		 	mowR--;
+	 		break;
+			 }
+		 }
+ }
+ 
+ //cuts lawn, turns blank into C
+ public void cut()
+ {
+ lawn[mowR-1][mowC-1]="C ";
+ lawn[mowR-1][mowC]="C ";
+ lawn[mowR-1][mowC+1]="C ";
+
+lawn[mowR][mowC-1]="C ";
+lawn[mowR][mowC]="C ";
+lawn[mowR][mowC+1]="C ";
+	 
+lawn[mowR+1][mowC-1]="C ";
+ lawn[mowR+1][mowC]="C ";
+lawn[mowR+1][mowC+1]="C ";
+ }
+ 
+ public boolean hitTree()
+ {
+ //detecting if hit tree or out of bounds
+ if(lawn[mowR-1][mowC-1].equals("T ")||outsideR(mowR-1)||outsideC(mowC-1))
+ 	return true;
+ if(lawn[mowR-1][mowC].equals("T ")||outsideR(mowR-1)||outsideC(mowC))
+ 	return true;
+ if(lawn[mowR-1][mowC+1].equals("T ")||outsideR(mowR-1)||outsideC(mowC+1))
+ 	return true;
+
+if(lawn[mowR][mowC-1].equals("T ")||outsideR(mowR)||outsideC(mowC-1))
+ 	return true;
+ if(lawn[mowR][mowC].equals("T ")||outsideR(mowR)||outsideC(mowC))
+ 	return true;
+ if(lawn[mowR][mowC+1].equals("T ")||outsideR(mowR)||outsideC(mowC+1))
+ 	return true;
+	 
+if(lawn[mowR+1][mowC-1].equals("T ")||outsideR(mowR+1)||outsideC(mowC-1))
+ 	return true;
+ if(lawn[mowR+1][mowC].equals("T ")||outsideR(mowR+1)||outsideC(mowC))
+ 	return true;
+ if(lawn[mowR+1][mowC+1].equals("T ")||outsideR(mowR+1)||outsideC(mowC-1))
+ 	return true;
+else
+	return false;
+ }
+ 
+ //checks if row # out of bounds
+ public boolean outsideR(int num)
+ {
+ 	if(num>=0&&num<=L-1)
+	 	return true;
+	 else
+ 		return false;
+ }
+ //checks if col # out of bounds
+ public boolean outsideC(int num)
+ {
+ 	if(num>=0&&num<=width-1)
+	 	return true;
+	 else
+ 		return false;
+ }
+ 
+ 
+}
