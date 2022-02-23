@@ -17,7 +17,7 @@ input.nextLine();
 for(int i=0; i<lawns; i++)
 {
 //create lawn
-System.out.println("Enter: L_W_mower center row_mower center column");
+System.out.println("Enter: L_W_mower center row_mower center column_");
 String s = input.nextLine();
 //gets inputs & creates new Lawn object
 getInputs(s);
